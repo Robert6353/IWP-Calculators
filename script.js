@@ -19,14 +19,48 @@ function createAreaChart() {
           borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1,
           tension: 0.2,
+          pointStyle: 'circle', // Change point style
+          pointRadius: 5,
+          pointHoverRadius: 6,
+          pointHitRadius: 10,
+          pointBackgroundColor: "rgba(75, 192, 192, 1)",
+          pointBorderColor: "rgba(75, 192, 192, 1)"
         },
       ],
     },
     options: {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Inflation Calculator',
+          font: {
+            size: 18,
+            weight: 'bold',
+          },
+          padding: 10
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 12 },
+          displayColors: false
+        }
+      },
       scales: {
         y: {
           beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.1)',
+            lineWidth: 1
+          },
         },
+        x: {
+          grid: {
+            color: 'rgba(0, 0, 0, 0.1)',
+            lineWidth: 1
+          },
+        }
       },
     },
   });
@@ -48,26 +82,29 @@ function validateInput(inputElement, value, min, max) {
 }
 
 function instanceInpute() {
-  //Instantiates the names for the validate input function
-  const initialInvestmentElement = document.getElementById("initial_investment");
-  const yearsElement = document.getElementById("years");
-  const inflationRateElement = document.getElementById("inflation_rate");
+  const elements = {
+    initialInvestment: document.getElementById("initial_investment"),
+    years: document.getElementById("years"),
+    inflationRate: document.getElementById("inflation_rate"),
+  };
 
-  // Instantiates the values for the validate input function
-  const initialInvestment = parseFloat(initialInvestmentElement.value);
-  const years = parseFloat(yearsElement.value);
-  const inflationRate = parseFloat(inflationRateElement.value);
+  const values = {
+    initialInvestment: parseFloat(elements.initialInvestment.value),
+    years: parseFloat(elements.years.value),
+    inflationRate: parseFloat(elements.inflationRate.value),
+  };
 
-  //Instantiates the validate input function for each of the inputs
-  const validInitialInvestment = validateInput(initialInvestmentElement, initialInvestment, 0, 999999999);
-  const validYears = validateInput(yearsElement, years, 0, 50);
-  const validInflationRate = validateInput(inflationRateElement, inflationRate, -30, 30);
+  const validInputs = {
+    initialInvestment: validateInput(elements.initialInvestment, values.initialInvestment, 0, 999999999),
+    years: validateInput(elements.years, values.years, 0, 50),
+    inflationRate: validateInput(elements.inflationRate, values.inflationRate, -30, 30),
+  };
 
-  if (!validInitialInvestment || !validYears ||!validInflationRate) {
+  if (!validInputs.initialInvestment || !validInputs.years || !validInputs.inflationRate) {
     return;
   }
 
-  return [initialInvestment, years, inflationRate];
+  return [values.initialInvestment, values.years, values.inflationRate];
 }
 
 function realValue(initialInvestment, years, inflationRate) {
@@ -96,9 +133,13 @@ function updateRealValueAndAreaChart() {
 
 const areaChart = createAreaChart();
 
-document.getElementById("initial_investment").addEventListener("input", updateRealValueAndAreaChart);
-document.getElementById("years").addEventListener("input", updateRealValueAndAreaChart);
-document.getElementById("inflation_rate").addEventListener("input", updateRealValueAndAreaChart);
+function addInputEventListener(elementId, callback) {
+  document.getElementById(elementId).addEventListener("input", callback);
+}
+
+addInputEventListener("initial_investment", updateRealValueAndAreaChart);
+addInputEventListener("years", updateRealValueAndAreaChart);
+addInputEventListener("inflation_rate", updateRealValueAndAreaChart);
 
 // Initialize the real value and area chart on page load
 updateRealValueAndAreaChart();
