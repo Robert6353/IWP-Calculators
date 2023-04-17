@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
+</head>
+
+<body>
+  <div id="inflation-calculator">
+  <label>
+    Initial Investment:
+    <input type="number" id="initial_investment" min="0" max="999999999" step="1000" value="1000">
+  </label>
+
+  <label>
+    Years:
+    <input type="number" id="years" min="0" max="50" step="1" value="1">
+  </label>
+
+  <label>
+    Inflation Rate (%):
+    <input type="number" id="inflation_rate" min="-30" max="30" step=".1" value="1">
+  </label>
+
+  <div>
+    Real Value: <span id="real_value"></span>
+  </div>
+  <div id="error-message" style="display: none; color: red;">
+  </div>
+  <div>
+    <canvas id="area-chart"></canvas>
+  </div>
+</div>
+  <script src = "script.js"></script>
+</body>
+
+</html>
