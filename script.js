@@ -1,6 +1,16 @@
 // The actual inflation calculation
-function calculateRealValue(initialInvestment, years, inflationRate) {
-  return initialInvestment * Math.pow(1 - inflationRate / 100, years);
+function calculateRealValue(initialInvestment, years, inflationRate, compoundingFrequency) { 
+  let periods, rate;
+
+   if (compoundingFrequency === 'monthly') {
+    periods = years * 12;
+    rate = Math.pow(1 + inflationRate / 100, 1 / 12) - 1;
+  } else {
+    periods = years;
+    rate = inflationRate / 100;
+  }
+  
+  return initialInvestment * Math.pow(1 - rate, periods);
 }
 
 // Create the area chart
@@ -86,12 +96,14 @@ function instanceInpute() {
     initialInvestment: document.getElementById("initial_investment"),
     years: document.getElementById("years"),
     inflationRate: document.getElementById("inflation_rate"),
+    compoundingFrequency: document.getElementById("compounding_frequency"),
   };
 
   const values = {
     initialInvestment: parseFloat(elements.initialInvestment.value),
     years: parseFloat(elements.years.value),
     inflationRate: parseFloat(elements.inflationRate.value),
+    compoundingFrequency: elements.compoundingFrequency.value,
   };
 
   const validInputs = {
@@ -104,17 +116,17 @@ function instanceInpute() {
     return;
   }
 
-  return [values.initialInvestment, values.years, values.inflationRate];
+  return [values.initialInvestment, values.years, values.inflationRate, values.compoundingFrequency];
 }
 
-function realValue(initialInvestment, years, inflationRate) {
-  const realValue = calculateRealValue(initialInvestment, years, inflationRate);
+function realValue(initialInvestment, years, inflationRate, compoundingFrequency) {
+  const realValue = calculateRealValue(initialInvestment, years, inflationRate, compoundingFrequency);
   document.getElementById("real_value").textContent = realValue.toFixed(2);
 
   //Turn the real value into an array?
   const realValuePerYear = Array.from({ length: years + 1 }, (_, i) => {
-    return calculateRealValue(initialInvestment, i, inflationRate).toFixed(2);
-  });
+  return calculateRealValue(initialInvestment, i, inflationRate, compoundingFrequency).toFixed(2);
+});
 
   updateAreaChart(areaChart, years, realValuePerYear);
 }
@@ -126,9 +138,9 @@ function updateAreaChart(chart, years, realValuePerYear) {
 }
 
 function updateRealValueAndAreaChart() {
-  const [initialInvestment, years, inflationRate] = instanceInpute();
+  const [initialInvestment, years, inflationRate, compoundingFrequency] = instanceInpute();
 
-  realValue(initialInvestment, years, inflationRate);
+  realValue(initialInvestment, years, inflationRate, compoundingFrequency);
 }
 
 const areaChart = createAreaChart();
@@ -140,6 +152,7 @@ function addInputEventListener(elementId, callback) {
 addInputEventListener("initial_investment", updateRealValueAndAreaChart);
 addInputEventListener("years", updateRealValueAndAreaChart);
 addInputEventListener("inflation_rate", updateRealValueAndAreaChart);
+addInputEventListener("compounding_frequency", updateRealValueAndAreaChart);
 
 // Initialize the real value and area chart on page load
 updateRealValueAndAreaChart();
