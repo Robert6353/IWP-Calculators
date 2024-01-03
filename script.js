@@ -3,17 +3,32 @@ let finance = new Finance();
 //comment
 function calculateRealValue(initialInvestment, years, growthRate, compoundingFrequency) {
   let investmentValue;
+  let totalInterest;
+  let investmentValueText;
+  let totalInterestText;
+  
   if (compoundingFrequency === 'monthly') {
-      investmentValue = finance.CI(growthRate, 12, initialInvestment, years);
+    investmentValue = finance.CI(growthRate, 12, initialInvestment, years);
   } else {
-      investmentValue = finance.CI(growthRate, 1, initialInvestment, years);
+    investmentValue = finance.CI(growthRate, 1, initialInvestment, years);
   }
 
-  let totalInterest = investmentValue - initialInvestment;
+  totalInterest = investmentValue - initialInvestment;
+
+  investmentValueText = investmentValue.toFixed(2);
+  totalInterestText = totalInterest.toFixed(2);
+
+  // Select the div where you want to display the investment value
+  let realValueElement = document.getElementById('real_value');
+  let totalInterestElement = document.getElementById('total_interest');
+
+  // Update the divs with the investment value and total interest
+  realValueElement.textContent = investmentValueText;
+  totalInterestElement.textContent = totalInterestText;
 
   return {
-      investmentValue: investmentValue,
-      totalInterest: totalInterest
+    investmentValue: investmentValue,
+    totalInterest: totalInterest
   };
 }
 
