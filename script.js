@@ -1,5 +1,6 @@
 let finance = new Finance();
 
+//comment
 function calculateRealValue(initialInvestment, years, growthRate, compoundingFrequency) {
   let investmentValue;
   if (compoundingFrequency === 'monthly') {
