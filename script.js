@@ -1,19 +1,21 @@
-// The actual inflation calculation
-function calculateRealValue(initialInvestment, years, inflationRate, compoundingFrequency) { 
-  let periods, rate;
+let finance = new Finance();
 
-   if (compoundingFrequency === 'monthly') {
-    periods = years * 12;
-    rate = Math.pow(1 + inflationRate / 100, 1 / 12) - 1;
+function calculateRealValue(initialInvestment, years, growthRate, compoundingFrequency) {
+  let investmentValue;
+  if (compoundingFrequency === 'monthly') {
+      investmentValue = finance.CI(growthRate, 12, initialInvestment, years);
   } else {
-    periods = years;
-    rate = inflationRate / 100;
+      investmentValue = finance.CI(growthRate, 1, initialInvestment, years);
   }
-  
-  return initialInvestment * Math.pow(1 - rate, periods);
+
+  let totalInterest = investmentValue - initialInvestment;
+
+  return {
+      investmentValue: investmentValue,
+      totalInterest: totalInterest
+  };
 }
 
-// Create the area chart
 function createAreaChart() {
   const ctx = document.getElementById("area-chart").getContext("2d");
 
@@ -23,26 +25,42 @@ function createAreaChart() {
       labels: [],
       datasets: [
         {
-          label: "Real Value",
-          data: [],
+          label: "Investment Value",
+          data: [], // This will be filled with investmentValue data
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1,
           tension: 0.2,
           pointStyle: 'circle', // Change point style
           pointRadius: 5,
-          pointHoverRadius: 6,
-          pointHitRadius: 10,
-          pointBackgroundColor: "rgba(75, 192, 192, 1)",
-          pointBorderColor: "rgba(75, 192, 192, 1)"
         },
-      ],
+        {
+          label: "Total Interest",
+          data: [], // This will be filled with totalInterest data
+          backgroundColor: "rgba(153, 102, 255, 0.2)",
+          borderColor: "rgba(153, 102, 255, 1)",
+          borderWidth: 1,
+          tension: 0.2,
+          pointStyle: 'circle', // Change point style
+          pointRadius: 5,
+        },
+        {
+          label: "Balance",
+          data: [], // This will be filled with initial investment data
+          backgroundColor: "rgba(255, 159, 64, 0.2)",
+          borderColor: "rgba(255, 159, 64, 1)",
+          borderWidth: 1,
+          tension: 0.2,
+          pointStyle: 'circle', // Change point style
+          pointRadius: 5,
+        }
+      ]
     },
     options: {
       plugins: {
         title: {
           display: true,
-          text: 'Inflation Calculator',
+          text: 'Investment Growth Calculator',
           font: {
             size: 18,
             weight: 'bold',
@@ -95,52 +113,57 @@ function instanceInpute() {
   const elements = {
     initialInvestment: document.getElementById("initial_investment"),
     years: document.getElementById("years"),
-    inflationRate: document.getElementById("inflation_rate"),
+    growthRate: document.getElementById("growth_rate"),
     compoundingFrequency: document.getElementById("compounding_frequency"),
   };
 
   const values = {
     initialInvestment: parseFloat(elements.initialInvestment.value),
     years: parseFloat(elements.years.value),
-    inflationRate: parseFloat(elements.inflationRate.value),
+    growthRate: parseFloat(elements.growthRate.value),
     compoundingFrequency: elements.compoundingFrequency.value,
   };
 
   const validInputs = {
     initialInvestment: validateInput(elements.initialInvestment, values.initialInvestment, 0, 999999999),
     years: validateInput(elements.years, values.years, 0, 50),
-    inflationRate: validateInput(elements.inflationRate, values.inflationRate, -30, 30),
+    growthRate: validateInput(elements.growthRate, values.growthRate, -30, 30),
   };
 
-  if (!validInputs.initialInvestment || !validInputs.years || !validInputs.inflationRate) {
+  if (!validInputs.initialInvestment || !validInputs.years || !validInputs.growthRate) {
     return;
   }
 
-  return [values.initialInvestment, values.years, values.inflationRate, values.compoundingFrequency];
+  return [values.initialInvestment, values.years, values.growthRate, values.compoundingFrequency];
 }
 
-function realValue(initialInvestment, years, inflationRate, compoundingFrequency) {
-  const realValue = calculateRealValue(initialInvestment, years, inflationRate, compoundingFrequency);
-  document.getElementById("real_value").textContent = realValue.toFixed(2);
+function realValue(initialInvestment, years, growthRate, compoundingFrequency) {
+  // ... rest of the function
 
-  //Turn the real value into an array?
-  const realValuePerYear = Array.from({ length: years + 1 }, (_, i) => {
-  return calculateRealValue(initialInvestment, i, inflationRate, compoundingFrequency).toFixed(2);
-});
+  const valuesPerYear = Array.from({ length: years + 1 }, (_, i) => {
+    const yearlyResult = calculateRealValue(initialInvestment, i, growthRate, compoundingFrequency);
+    return {
+      investmentValue: yearlyResult.investmentValue.toFixed(2),
+      totalInterest: yearlyResult.totalInterest.toFixed(2),
+      balance: initialInvestment.toFixed(2), // Add initial investment to the data
+    };
+  });
 
-  updateAreaChart(areaChart, years, realValuePerYear);
+  updateAreaChart(areaChart, years, valuesPerYear);
 }
 
-function updateAreaChart(chart, years, realValuePerYear) {
+function updateAreaChart(chart, years, valuesPerYear) {
   chart.data.labels = Array.from({ length: years + 1 }, (_, i) => i);
-  chart.data.datasets[0].data = realValuePerYear;
+  chart.data.datasets[0].data = valuesPerYear.map(value => value.investmentValue);
+  chart.data.datasets[1].data = valuesPerYear.map(value => value.totalInterest);
+  chart.data.datasets[2].data = valuesPerYear.map(value => value.balance); // Add initial investment data to the new dataset
   chart.update();
 }
 
 function updateRealValueAndAreaChart() {
-  const [initialInvestment, years, inflationRate, compoundingFrequency] = instanceInpute();
+  const [initialInvestment, years, growthRate, compoundingFrequency] = instanceInpute();
 
-  realValue(initialInvestment, years, inflationRate, compoundingFrequency);
+  realValue(initialInvestment, years, growthRate, compoundingFrequency);
 }
 
 const areaChart = createAreaChart();
@@ -151,7 +174,7 @@ function addInputEventListener(elementId, callback) {
 
 addInputEventListener("initial_investment", updateRealValueAndAreaChart);
 addInputEventListener("years", updateRealValueAndAreaChart);
-addInputEventListener("inflation_rate", updateRealValueAndAreaChart);
+addInputEventListener("growth_rate", updateRealValueAndAreaChart);
 addInputEventListener("compounding_frequency", updateRealValueAndAreaChart);
 
 // Initialize the real value and area chart on page load

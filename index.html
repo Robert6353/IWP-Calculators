@@ -6,11 +6,15 @@
   <meta name="viewport" content="width=device-width">
   <title>replit</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/financejs@4.1.0/finance.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1"></script>
 </head>
 
 <body>
-  <div id="inflation-calculator">
+  <h1>Investment Growth Calculator</h1>
+  <h4>Calculate the real value of your investment overtime at a given investment growth rate</h4>
+  
+  <div id="investment-growth-calculator">
   <label>
     Initial Investment:
     <input type="number" id="initial_investment" min="0" max="999999999" step="1000" value="1000">
@@ -22,8 +26,8 @@
   </label>
 
   <label>
-    Inflation Rate (%):
-    <input type="number" id="inflation_rate" min="-30" max="30" step=".1" value="1">
+    Growth Rate (%):
+    <input type="number" id="growth_rate" min="-30" max="30" step=".1" value="1">
   </label>
 
   <label>
