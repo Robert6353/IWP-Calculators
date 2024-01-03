@@ -2,3 +2,34 @@ html, body {
   height: 100%;
   width: 100%;
 }
+
+.top-container {
+  display: flex;
+  padding: 20px;
+}
+
+.input-container {
+  flex: 0.6;
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.output-container {
+  flex: 0.4;
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}

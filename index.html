@@ -15,41 +15,47 @@
   <h4>Calculate the real value of your investment overtime at a given investment growth rate</h4>
   
   <div id="investment-growth-calculator">
-  <label>
-    Initial Investment:
-    <input type="number" id="initial_investment" min="0" max="999999999" step="1000" value="1000">
-  </label>
+    <div class="top-container">
+    <div class="input-container">
+      <label>
+        Initial Investment:
+        <input type="number" id="initial_investment" min="0" max="999999999" step="1000" value="1000">
+      </label>
 
-  <label>
-    Years:
-    <input type="number" id="years" min="0" max="50" step="1" value="1">
-  </label>
+      <label>
+        Years:
+        <input type="number" id="years" min="0" max="50" step="1" value="1">
+      </label>
 
-  <label>
-    Growth Rate (%):
-    <input type="number" id="growth_rate" min="-30" max="30" step=".1" value="1">
-  </label>
+      <label>
+        Growth Rate (%):
+        <input type="number" id="growth_rate" min="-30" max="30" step=".1" value="1">
+      </label>
 
-  <label>
-  Compounding Frequency:
-    <select id="compounding_frequency">
-      <option value="annually">Annually</option>
-      <option value="monthly">Monthly</option>
-    </select>
-  </label>
+      <label>
+      Compounding Frequency:
+        <select id="compounding_frequency">
+          <option value="annually">Annually</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </label>
+    </div>
 
-  <div>
-    Real Value: <span id="real_value"></span>
+    <div class="output-container">
+      <div>
+        Real Value: <span id="real_value"></span>
+      </div>
+      <div>
+        Total Interest: <span id="total_interest"></span>
+      </div>
+      <div id="error-message" style="display: none; color: red;">
+      </div>
+    </div>
+    </div>
+    <div>
+      <canvas id="area-chart"></canvas>
+    </div>
   </div>
-  <div>
-    Total Interest: <span id="total_interest"></span>
-  </div>
-  <div id="error-message" style="display: none; color: red;">
-  </div>
-  <div>
-    <canvas id="area-chart"></canvas>
-  </div>
-</div>
   <script src = "script.js"></script>
 </body>
 
