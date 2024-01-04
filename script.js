@@ -123,6 +123,37 @@ function createAreaChart() {
   return chart;
 }
 
+let pieChart; // Declare a global variable to hold the pie chart
+
+function createPieChart(initialInvestment, totalContributions, totalInterest) {
+  const ctx = document.getElementById('pieChart').getContext('2d');
+
+  // If a pie chart already exists, destroy it
+  if (pieChart) {
+    pieChart.destroy();
+  }
+
+  // Create a new pie chart
+  pieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Initial Investment', 'Total Contributions', 'Total Interest'],
+      datasets: [{
+        data: [initialInvestment, totalContributions, totalInterest],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+      }]
+    },
+    options: {
+      responsive: true,
+      title: {
+        display: true,
+        text: 'Investment Breakdown'
+      }
+    }
+  });
+}
+
 function generateTable(valuesPerYear) {
   // Get the div where the table will be displayed
   let tableDiv = document.getElementById('details_table');
@@ -225,7 +256,17 @@ function realValue(initialInvestment, monthlyContribution, years, growthRate, co
   // Generate the details table
   generateTable(valuesPerYear);
 
+  // Update the area chart
   updateAreaChart(areaChart, years, valuesPerYear);
+
+  // Calculate the total contributions
+  let totalContributions = monthlyContribution * years * 12;
+
+  // Calculate the total interest earned
+  let totalInterest = valuesPerYear[years].totalInterest;
+
+  // Create the pie chart
+  createPieChart(initialInvestment, totalContributions, totalInterest);
 }
 
 function updateAreaChart(chart, years, valuesPerYear) {
