@@ -11,15 +11,17 @@
 </head>
 
 <body>
-  <h1>Investment Growth Calculator</h1>
-  <h4>Calculate the real value of your investment overtime at a given investment growth rate</h4>
-  
-  <div id="investment-growth-calculator">
+  <div class="investment-growth-calculator">
     <div class="top-container">
     <div class="input-container">
       <label>
         Initial Investment:
         <input type="number" id="initial_investment" min="0" max="999999999" step="1000" value="1000">
+      </label>
+
+      <label>
+        Monthly Investment:
+        <input type="number" id="monthly_contribution" min="0" max="999999999" step="1000" value="1000">
       </label>
 
       <label>

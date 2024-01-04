@@ -1,19 +1,30 @@
 let finance = new Finance();
 
-//comment
-function calculateRealValue(initialInvestment, years, growthRate, compoundingFrequency) {
+function calculateRealValue(initialInvestment, monthlyContribution, years, growthRate, compoundingFrequency) {
   let investmentValue;
   let totalInterest;
   let investmentValueText;
   let totalInterestText;
   
   if (compoundingFrequency === 'monthly') {
-    investmentValue = finance.CI(growthRate, 12, initialInvestment, years);
+    let months = years * 12;
+    let monthlyInt = growthRate / 12 / 100;
+  
+    let startInt = initialInvestment * Math.pow(1 + monthlyInt, months);
+    let contributions = monthlyContribution * ((Math.pow(1 + monthlyInt, months) - 1) / monthlyInt);
+  
+    investmentValue = startInt + contributions;
+    totalInterest = investmentValue - initialInvestment - (monthlyContribution * months);
   } else {
-    investmentValue = finance.CI(growthRate, 1, initialInvestment, years);
+    let annualInt = growthRate / 100;
+    let annualContribution = monthlyContribution * 12;
+  
+    let startInt = initialInvestment * Math.pow(1 + annualInt, years);
+    let contributions = annualContribution * ((Math.pow(1 + annualInt, years) - 1) / annualInt);
+  
+    investmentValue = startInt + contributions;
+    totalInterest = investmentValue - initialInvestment - (annualContribution * years);
   }
-
-  totalInterest = investmentValue - initialInvestment;
 
   investmentValueText = investmentValue.toFixed(2);
   totalInterestText = totalInterest.toFixed(2);
@@ -128,6 +139,7 @@ function validateInput(inputElement, value, min, max) {
 function instanceInpute() {
   const elements = {
     initialInvestment: document.getElementById("initial_investment"),
+    monthlyContribution: document.getElementById("monthly_contribution"),
     years: document.getElementById("years"),
     growthRate: document.getElementById("growth_rate"),
     compoundingFrequency: document.getElementById("compounding_frequency"),
@@ -135,6 +147,7 @@ function instanceInpute() {
 
   const values = {
     initialInvestment: parseFloat(elements.initialInvestment.value),
+    monthlyContribution: parseFloat(elements.monthlyContribution.value),
     years: parseFloat(elements.years.value),
     growthRate: parseFloat(elements.growthRate.value),
     compoundingFrequency: elements.compoundingFrequency.value,
@@ -142,22 +155,21 @@ function instanceInpute() {
 
   const validInputs = {
     initialInvestment: validateInput(elements.initialInvestment, values.initialInvestment, 0, 999999999),
+    monthlyContribution: validateInput(elements.monthlyContribution, values.monthlyContribution, 0, 999999999),
     years: validateInput(elements.years, values.years, 0, 50),
     growthRate: validateInput(elements.growthRate, values.growthRate, -30, 30),
   };
 
-  if (!validInputs.initialInvestment || !validInputs.years || !validInputs.growthRate) {
+  if (!validInputs.initialInvestment || !validInputs.monthlyContribution || !validInputs.years || !validInputs.growthRate) {
     return;
   }
 
-  return [values.initialInvestment, values.years, values.growthRate, values.compoundingFrequency];
+  return [values.initialInvestment, values.monthlyContribution, values.years, values.growthRate, values.compoundingFrequency];
 }
 
-function realValue(initialInvestment, years, growthRate, compoundingFrequency) {
-  // ... rest of the function
-
+function realValue(initialInvestment, monthlyContribution, years, growthRate, compoundingFrequency) {
   const valuesPerYear = Array.from({ length: years + 1 }, (_, i) => {
-    const yearlyResult = calculateRealValue(initialInvestment, i, growthRate, compoundingFrequency);
+    const yearlyResult = calculateRealValue(initialInvestment, monthlyContribution, i, growthRate, compoundingFrequency);
     return {
       investmentValue: yearlyResult.investmentValue.toFixed(2),
       totalInterest: yearlyResult.totalInterest.toFixed(2),
@@ -177,9 +189,9 @@ function updateAreaChart(chart, years, valuesPerYear) {
 }
 
 function updateRealValueAndAreaChart() {
-  const [initialInvestment, years, growthRate, compoundingFrequency] = instanceInpute();
+  const [initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency] = instanceInpute();
 
-  realValue(initialInvestment, years, growthRate, compoundingFrequency);
+  realValue(initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency);
 }
 
 const areaChart = createAreaChart();
@@ -189,6 +201,7 @@ function addInputEventListener(elementId, callback) {
 }
 
 addInputEventListener("initial_investment", updateRealValueAndAreaChart);
+addInputEventListener("monthly_contribution", updateRealValueAndAreaChart);
 addInputEventListener("years", updateRealValueAndAreaChart);
 addInputEventListener("growth_rate", updateRealValueAndAreaChart);
 addInputEventListener("compounding_frequency", updateRealValueAndAreaChart);
