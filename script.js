@@ -123,6 +123,51 @@ function createAreaChart() {
   return chart;
 }
 
+function generateTable(valuesPerYear) {
+  // Get the div where the table will be displayed
+  let tableDiv = document.getElementById('details_table');
+
+  // Create the table
+  let table = document.createElement('table');
+
+  // Create the table header
+  let thead = document.createElement('thead');
+  let headerRow = document.createElement('tr');
+  let headers = ['Years', 'Future Value', 'Total Contributions', 'Total Interest'];
+  for (let header of headers) {
+    let th = document.createElement('th');
+    th.textContent = header;
+    headerRow.appendChild(th);
+  }
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // Create the table body
+  let tbody = document.createElement('tbody');
+  for (let i = 0; i < valuesPerYear.length; i++) {
+    let row = document.createElement('tr');
+
+    // Get the values for this year
+    let futureValue = valuesPerYear[i].investmentValue;
+    let totalContributions = valuesPerYear[i].balance;
+    let totalInterest = valuesPerYear[i].totalInterest;
+
+    // Add the values to the row
+    let values = [i, futureValue, totalContributions, totalInterest];
+    for (let value of values) {
+      let td = document.createElement('td');
+      td.textContent = value;
+      row.appendChild(td);
+    }
+
+    tbody.appendChild(row);
+  }
+  table.appendChild(tbody);
+
+  // Add the table to the div
+  tableDiv.appendChild(table);
+}
+
 // Validate the input of the calculation, much improved
 function validateInput(inputElement, value, min, max) {
   if (isNaN(value) || value < min || value > max) {
@@ -176,6 +221,9 @@ function realValue(initialInvestment, monthlyContribution, years, growthRate, co
       balance: initialInvestment.toFixed(2), // Add initial investment to the data
     };
   });
+
+  // Generate the details table
+  generateTable(valuesPerYear);
 
   updateAreaChart(areaChart, years, valuesPerYear);
 }
