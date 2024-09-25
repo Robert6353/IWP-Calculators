@@ -74,8 +74,18 @@ function createAreaChart() {
         {
           label: "Balance",
           data: [], // This will be filled with initial investment data
-          backgroundColor: "rgba(255, 159, 64, 0.2)",
-          borderColor: "rgba(255, 159, 64, 1)",
+          backgroundColor: "#FF6384",
+          borderColor: "#FF6384",
+          borderWidth: 1,
+          tension: 0.2,
+          pointStyle: 'circle', // Change point style
+          pointRadius: 5,
+        },
+        {
+          label: "Total Contributions",
+          data: [], // This will be filled with total contributions data
+          backgroundColor: "#4BC0C0",
+          borderColor: "#4BC0C0",
           borderWidth: 1,
           tension: 0.2,
           pointStyle: 'circle', // Change point style
@@ -137,11 +147,11 @@ function createPieChart(initialInvestment, totalContributions, totalInterest) {
   pieChart = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Initial Investment', 'Total Contributions', 'Total Interest'],
+      labels: ['Balance', 'Total Contributions', 'Total Interest'],
       datasets: [{
         data: [initialInvestment, totalContributions, totalInterest],
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        backgroundColor: ['#FF6384', '#36A2EB', 'rgba(153, 102, 255, 0.2)'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB', 'rgba(153, 102, 255, 1)']
       }]
     },
     options: {
@@ -256,11 +266,11 @@ function realValue(initialInvestment, monthlyContribution, years, growthRate, co
   // Generate the details table
   generateTable(valuesPerYear);
 
-  // Update the area chart
-  updateAreaChart(areaChart, years, valuesPerYear);
-
   // Calculate the total contributions
   let totalContributions = monthlyContribution * years * 12;
+
+  // Update the area chart
+  updateAreaChart(areaChart, years, valuesPerYear, totalContributions, monthlyContribution);
 
   // Calculate the total interest earned
   let totalInterest = valuesPerYear[years].totalInterest;
@@ -269,11 +279,12 @@ function realValue(initialInvestment, monthlyContribution, years, growthRate, co
   createPieChart(initialInvestment, totalContributions, totalInterest);
 }
 
-function updateAreaChart(chart, years, valuesPerYear) {
+function updateAreaChart(chart, years, valuesPerYear, totalContributions, monthlyContribution) {
   chart.data.labels = Array.from({ length: years + 1 }, (_, i) => i);
   chart.data.datasets[0].data = valuesPerYear.map(value => value.investmentValue);
   chart.data.datasets[1].data = valuesPerYear.map(value => value.totalInterest);
   chart.data.datasets[2].data = valuesPerYear.map(value => value.balance); // Add initial investment data to the new dataset
+  chart.data.datasets[3].data = Array.from({ length: years + 1 }, (_, i) => (monthlyContribution * i * 12).toFixed(2)); // Add total contributions data
   chart.update();
 }
 
