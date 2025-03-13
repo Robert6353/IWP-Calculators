@@ -289,9 +289,22 @@ function updateAreaChart(chart, years, valuesPerYear, totalContributions, monthl
 }
 
 function updateRealValueAndAreaChart() {
-  const [initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency] = instanceInpute();
+  const inputs = instanceInpute();
 
+  if (!inputs) return; // Exit if validation fails
+
+  const [initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency] = inputs;
+  
   realValue(initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency);
+
+  // Increment the click counter
+  clickCount++;
+
+  // If user clicks 3 times, trigger the Elementor popup
+  if (clickCount === 4) {
+    clickCount = 0; // Reset counter after showing popup
+    elementorProFrontend.modules.popup.showPopup({ id: 3078 }); // Replace '123' with your actual popup ID
+  }
 }
 
 const areaChart = createAreaChart();
@@ -306,5 +319,9 @@ function addInputEventListener(elementId, callback) {
 // addInputEventListener("growth_rate", updateRealValueAndAreaChart);
 // addInputEventListener("compounding_frequency", updateRealValueAndAreaChart);
 
+let clickCount = 0; // Initialize click counter
+
 // Initialize the real value and area chart on page load
 updateRealValueAndAreaChart();
+
+
