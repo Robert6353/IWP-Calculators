@@ -300,11 +300,11 @@ function addInputEventListener(elementId, callback) {
   document.getElementById(elementId).addEventListener("input", callback);
 }
 
-addInputEventListener("initial_investment", updateRealValueAndAreaChart);
-addInputEventListener("monthly_contribution", updateRealValueAndAreaChart);
-addInputEventListener("years", updateRealValueAndAreaChart);
-addInputEventListener("growth_rate", updateRealValueAndAreaChart);
-addInputEventListener("compounding_frequency", updateRealValueAndAreaChart);
+// addInputEventListener("initial_investment", updateRealValueAndAreaChart);
+// addInputEventListener("monthly_contribution", updateRealValueAndAreaChart);
+// addInputEventListener("years", updateRealValueAndAreaChart);
+// addInputEventListener("growth_rate", updateRealValueAndAreaChart);
+// addInputEventListener("compounding_frequency", updateRealValueAndAreaChart);
 
 // Initialize the real value and area chart on page load
 updateRealValueAndAreaChart();
