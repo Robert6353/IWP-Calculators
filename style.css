@@ -3,6 +3,58 @@ html, body {
   width: 100%;
 }
 
+#investment-calculator-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+#investment-calculator-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+#investment-calculator-form input,
+#investment-calculator-form select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+#investment-calculator-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0073e6;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#investment-calculator-form button:hover {
+  background-color: #005bb5;
+}
+
+#results {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+#results p {
+  margin: 0;
+  font-weight: bold;
+}
+
 .top-container {
   display: flex;
   padding: 20px;
