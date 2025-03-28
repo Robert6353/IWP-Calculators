@@ -1,5 +1,18 @@
 let finance = new Finance();
 
+function toggleBlurOverlay() {
+  const blurContainers = document.querySelectorAll('.blur-container');
+  const isUnlocked = localStorage.getItem("hasSubmittedContactForm") === "true";
+
+  blurContainers.forEach(container => {
+    if (isUnlocked) {
+      container.classList.add('blur-removed');
+    } else {
+      container.classList.remove('blur-removed');
+    }
+  });
+}
+
 function calculateRealValue(initialInvestment, monthlyContribution, years, growthRate, compoundingFrequency) {
   let investmentValue;
   let totalInterest;
@@ -167,6 +180,8 @@ function createPieChart(initialInvestment, totalContributions, totalInterest) {
 function generateTable(valuesPerYear) {
   // Get the div where the table will be displayed
   let tableDiv = document.getElementById('details_table');
+	
+  tableDiv.innerHTML = ''; // <--- Add this line
 
   // Create the table
   let table = document.createElement('table');
@@ -277,6 +292,8 @@ function realValue(initialInvestment, monthlyContribution, years, growthRate, co
 
   // Create the pie chart
   createPieChart(initialInvestment, totalContributions, totalInterest);
+	
+	toggleBlurOverlay();
 }
 
 function updateAreaChart(chart, years, valuesPerYear, totalContributions, monthlyContribution) {
@@ -290,22 +307,53 @@ function updateAreaChart(chart, years, valuesPerYear, totalContributions, monthl
 
 function updateRealValueAndAreaChart() {
   const inputs = instanceInpute();
-
-  if (!inputs) return; // Exit if validation fails
+  if (!inputs) return;
 
   const [initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency] = inputs;
-  
+
   realValue(initialInvestment, monthly_contribution, years, growthRate, compoundingFrequency);
 
-  // Increment the click counter
+  // Don't trigger popup if already submitted
+  if (localStorage.getItem("hasSubmittedContactForm") === "true") {
+    return;
+  }
+
   clickCount++;
 
-  // If user clicks 3 times, trigger the Elementor popup
   if (clickCount === 4) {
-    clickCount = 0; // Reset counter after showing popup
-    elementorProFrontend.modules.popup.showPopup({ id: 3078 }); // Replace '123' with your actual popup ID
+    clickCount = 0;
+    elementorProFrontend.modules.popup.showPopup({ id: 3311 }); // Your popup ID
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new MutationObserver(() => {
+    const popupForm = document.querySelector('.elementor-popup form'); // Update selector if needed
+    if (popupForm) {
+      popupForm.addEventListener('submit', () => {
+        localStorage.setItem("hasSubmittedContactForm", "true");
+      });
+      observer.disconnect(); // Only attach once
+    }
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Hook into HubSpot form submission
+  window.addEventListener('message', function (event) {
+    if (
+      event.data.type === 'hsFormCallback' &&
+      event.data.eventName === 'onFormSubmitted'
+    ) {
+      // Optional: Only act on specific form GUID or ID
+      console.log("HubSpot form was submitted!");
+      localStorage.setItem("hasSubmittedContactForm", "true");
+    }
+  });
+});
+
 
 const areaChart = createAreaChart();
 

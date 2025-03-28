@@ -80,6 +80,16 @@ html, body {
   text-align: center;
 }
 
+.blur-container {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+}
+
+.blur-container.blur-removed {
+  filter: none !important;
+}
+
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
